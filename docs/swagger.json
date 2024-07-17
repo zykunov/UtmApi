@@ -1,179 +1,19 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "REST API учета времени задач по пользователям",
-        "title": "time tracker",
+        "description": "REST API",
+        "title": "utm api",
         "contact": {
             "name": "Igor Zykunov"
         },
         "version": "1.0"
     },
     "host": "localhost:8080",
-    "basePath": "/api/v1",
+    "basePath": "/",
     "paths": {
-        "/getusers": {
-            "get": {
-                "description": "Получение всех пользователей, доступны параметры limit и offset ()",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get info about users",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "name": "offset",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.User"
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/getwork": {
+        "/accounts": {
             "post": {
-                "description": "Получение трудозатрат по пользователю за период задача-сумма часов и минут с сортировкой от большей затраты к меньшей. Пример даты 2024-07-06",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Get work hours",
-                "parameters": [
-                    {
-                        "description": "Task JSON",
-                        "name": "task",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/helpers.GetWork"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Task"
-                        }
-                    }
-                }
-            }
-        },
-        "/info": {
-            "get": {
-                "description": "Получение данных пользователя по серии иномеру паспорта",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Get info about one user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "name": "passportnumber",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "name": "passportserie",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.User"
-                        }
-                    }
-                }
-            }
-        },
-        "/start": {
-            "post": {
-                "description": "Начало отсчета времени по пользователю и задаче.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Start time count",
-                "parameters": [
-                    {
-                        "description": "Task JSON",
-                        "name": "task",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/helpers.TaskStartStop"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Task"
-                        }
-                    }
-                }
-            }
-        },
-        "/stop": {
-            "post": {
-                "description": "На вход: Id пользователя и задачи, для которых закончить отсчет времени.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "tasks"
-                ],
-                "summary": "Stop time count",
-                "parameters": [
-                    {
-                        "description": "Task JSON",
-                        "name": "task",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/helpers.TaskStartStop"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Task"
-                        }
-                    }
-                }
-            }
-        },
-        "/useradd": {
-            "post": {
-                "description": "Добавление пользователя. Пасппортные данные - строка, разделитель пробел.",
+                "description": "Создание аккаунта.",
                 "consumes": [
                     "application/json"
                 ],
@@ -181,17 +21,17 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Account"
                 ],
-                "summary": "AddUser",
+                "summary": "AddAccount",
                 "parameters": [
                     {
-                        "description": "user info",
+                        "description": "account add",
                         "name": "input",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/helpers.UserAddStruct"
+                            "$ref": "#/definitions/models.Account"
                         }
                     }
                 ],
@@ -199,28 +39,31 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.Account"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.Account"
                         }
                     }
                 }
             }
         },
-        "/userdelete/{id}": {
-            "delete": {
-                "description": "Удаление пользователя",
+        "/accounts/{id}/balance": {
+            "get": {
+                "description": "Получение баланса",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Account"
                 ],
-                "summary": "User delete",
+                "summary": "GetBalance",
                 "parameters": [
                     {
                         "type": "integer",
@@ -231,41 +74,103 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "type": "string"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
             }
         },
-        "/userupdate": {
-            "patch": {
-                "description": "Изменение пользователя",
+        "/accounts/{id}/deposit": {
+            "post": {
+                "description": "Внесение денег",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "Account"
                 ],
-                "summary": "User update",
+                "summary": "Deposit",
                 "parameters": [
                     {
-                        "description": "User JSON",
-                        "name": "user",
+                        "description": "deposit",
+                        "name": "input",
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/helpers.UserUpdate"
+                            "$ref": "#/definitions/helpers.SummAmount"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/models.Account"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Account"
+                        }
+                    }
+                }
+            }
+        },
+        "/accounts/{id}/withdraw": {
+            "post": {
+                "description": "Снятие денег",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Account"
+                ],
+                "summary": "Withdrow",
+                "parameters": [
+                    {
+                        "description": "account add",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/helpers.SummAmount"
                         }
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/models.Account"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.Account"
                         }
                     }
                 }
@@ -273,120 +178,27 @@
         }
     },
     "definitions": {
-        "helpers.GetWork": {
+        "helpers.SummAmount": {
             "type": "object",
             "properties": {
-                "dateEnd": {
-                    "type": "string"
-                },
-                "dateStart": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "integer"
+                "amount": {
+                    "type": "number"
                 }
             }
         },
-        "helpers.TaskStartStop": {
+        "models.Account": {
             "type": "object",
             "properties": {
-                "taskId": {
-                    "type": "integer"
-                },
-                "userId": {
-                    "type": "integer"
-                }
-            }
-        },
-        "helpers.UserAddStruct": {
-            "type": "object",
-            "properties": {
-                "passportNumber": {
-                    "type": "string"
-                }
-            }
-        },
-        "helpers.UserUpdate": {
-            "type": "object",
-            "properties": {
-                "ID": {
-                    "description": "@Description required",
-                    "type": "integer"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "passportNumber": {
-                    "type": "integer"
-                },
-                "passportSerie": {
-                    "type": "integer"
-                },
-                "patronymic": {
-                    "type": "string"
-                },
-                "surname": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Task": {
-            "type": "object",
-            "properties": {
-                "createdAt": {
-                    "type": "string"
-                },
-                "taskEnded": {
-                    "type": "integer"
-                },
-                "taskID": {
-                    "type": "integer"
-                },
-                "taskStarted": {
-                    "type": "integer"
-                },
-                "taskTime": {
+                "balance": {
                     "type": "number"
                 },
-                "updatedAt": {
-                    "type": "string"
-                },
-                "userId": {
+                "id": {
                     "type": "integer"
-                }
-            }
-        },
-        "models.User": {
-            "type": "object",
-            "properties": {
-                "ID": {
-                    "type": "integer"
-                },
-                "address": {
-                    "type": "string"
-                },
-                "createdAt": {
-                    "type": "string"
                 },
                 "name": {
                     "type": "string"
                 },
-                "passportNumber": {
-                    "type": "integer"
-                },
-                "passportSerie": {
-                    "type": "integer"
-                },
-                "patronymic": {
-                    "type": "string"
-                },
                 "surname": {
-                    "type": "string"
-                },
-                "updatedAt": {
                     "type": "string"
                 }
             }

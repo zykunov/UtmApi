@@ -2,23 +2,19 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/zykunov/timeTracker/handlers"
+	"github.com/zykunov/bankAPI/handlers"
 
-	_ "github.com/zykunov/timeTracker/docs"
+	_ "github.com/zykunov/bankAPI/docs"
 )
 
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
-	apiV1Group := router.Group("/api/v1")
+	apiGroup := router.Group("/")
 	{
-		apiV1Group.POST("useradd", handlers.AddUser)             // Добавление пользователя
-		apiV1Group.DELETE("userdelete/:id", handlers.DeleteUser) // Удаление пользователя
-		apiV1Group.PATCH("userupdate", handlers.UpdateUserById)  // Изменение пользователя
-		apiV1Group.POST("getwork", handlers.GetWork)             // Получение трудозатрат по пользователю за период задача-сумма часов и минут с сортировкой от большей затраты к меньшей
-		apiV1Group.POST("start", handlers.StartTask)             // Начать отсчет времени по задаче пользователя
-		apiV1Group.POST("stop", handlers.StopTask)               // Закончить отсчет времени по задаче пользователя
-		apiV1Group.GET("info", handlers.GetUser)                 // Получение пользователя
-		apiV1Group.GET("getusers", handlers.GetUsers)            // Получение пользователей
+		apiGroup.POST("/accounts", handlers.AddAccount)            // Добавление аккаунта
+		apiGroup.POST("/accounts/:id/deposit", handlers.Deposit)   // Пополнение баланса
+		apiGroup.POST("/accounts/:id/withdraw", handlers.Withdraw) // Вывод денех
+		apiGroup.GET("/accounts/:id/balance", handlers.GetBalance) // Получение баланса по id пользователя
 	}
 
 	return router
