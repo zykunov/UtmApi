@@ -28,7 +28,6 @@ func AddAccount(a *Account) error {
 func (a *Account) Deposit(amount float64) error {
 	a.mutex.Lock()
 	defer a.mutex.Unlock()
-	// defer a.wg.Done()
 	return storage.DB.Model(a).Where("id = ?", a.Id).Update("balance", amount).Error
 }
 
