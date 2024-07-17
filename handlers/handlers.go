@@ -3,15 +3,18 @@ package handlers
 import (
 	"log"
 	"strconv"
+	"sync"
 
 	"github.com/gin-gonic/gin"
 	"github.com/zykunov/bankAPI/helpers"
 	"github.com/zykunov/bankAPI/models"
 )
 
+var Wg sync.WaitGroup // Для обуздания рутин
+
 // @Summary AddAccount
 // @Tags Account
-// @Description Создание аккаунта.
+// @Description Создание аккаунта. Добавил имя и фамилию, чтоб по интереснее было, но это не обязательные параметры.
 // @Accept json
 // @Produce json
 // @Param input body helpers.AccountAdd true "account add"
@@ -56,6 +59,7 @@ func Deposit(c *gin.Context) {
 		log.Println("user ID error")
 		return
 	}
+	log.Printf("Deposit operation, accountId: %d", account.Id)
 
 	if c.BindJSON(&summ) != nil {
 		c.String(400, "parameter error")
@@ -70,8 +74,9 @@ func Deposit(c *gin.Context) {
 
 	newBalance := account.Balance + summ.Amount
 
-	// account.Wg.Add(1)
+	Wg.Add(1)
 	go func(c *gin.Context, a models.Account, newBalance float64) {
+		defer Wg.Done()
 		err = account.Deposit(newBalance)
 		if err != nil {
 			helpers.RespondJSON(c, 404, account)
@@ -79,9 +84,7 @@ func Deposit(c *gin.Context) {
 		helpers.RespondJSON(c, 200, account)
 	}(c, account, newBalance)
 
-	// account.Wg.Wait()
-
-	log.Printf("Deposit operation, accountId: %d", account.Id)
+	Wg.Wait()
 
 }
 
@@ -127,7 +130,9 @@ func Withdraw(c *gin.Context) {
 		return
 	}
 
+	Wg.Add(1)
 	go func(c *gin.Context, a models.Account, newBalance float64) {
+		defer Wg.Done()
 		err = account.Withdraw(newBalance)
 		if err != nil {
 			helpers.RespondJSON(c, 404, account)
@@ -136,6 +141,7 @@ func Withdraw(c *gin.Context) {
 
 		log.Printf("Withdraw operation, accountId: %d", account.Id)
 	}(c, account, newBalance)
+	Wg.Wait()
 }
 
 // @Summary GetBalance
@@ -160,15 +166,13 @@ func GetBalance(c *gin.Context) {
 	}
 
 	account.Id = uint(id)
-
-	account.Wg.Add(1)
-
+	Wg.Add(1)
 	go func(c *gin.Context, a models.Account) {
+		defer Wg.Done()
 		balance := account.GetBalance()
 		helpers.RespondJSON(c, 200, balance)
 	}(c, account)
-
-	account.Wg.Wait()
+	Wg.Wait()
 
 	log.Printf("Get balance command, accountId: %d", account.Id)
 

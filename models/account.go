@@ -14,12 +14,11 @@ type BankAccount interface {
 }
 
 type Account struct {
-	Id      uint    `json:"id" gorm:"primarykey"`
-	Balance float64 `json:"balance"`
-	Name    string  `json:"name"`
-	Surname string  `json:"surname"`
-	mutex   sync.Mutex
-	Wg      sync.WaitGroup
+	Id      uint       `json:"id" gorm:"primarykey"`
+	Balance float64    `json:"balance"`
+	Name    string     `json:"name"`
+	Surname string     `json:"surname"`
+	mutex   sync.Mutex // для потокобезопасности
 }
 
 func AddAccount(a *Account) error {
@@ -41,7 +40,6 @@ func (a *Account) Withdraw(amount float64) error {
 
 func (a *Account) GetBalance() float64 {
 	a.mutex.Lock()
-	defer a.Wg.Done()
 	defer a.mutex.Unlock()
 	storage.DB.Model(a).Select("balance").Where("id = ?", a.Id).Find(a)
 	return a.Balance

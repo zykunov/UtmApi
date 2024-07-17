@@ -19,7 +19,7 @@ const docTemplate = `{
     "paths": {
         "/accounts": {
             "post": {
-                "description": "Создание аккаунта.",
+                "description": "Создание аккаунта. Добавил имя и фамилию, чтоб по интереснее было, но это не обязательные параметры.",
                 "consumes": [
                     "application/json"
                 ],

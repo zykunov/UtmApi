@@ -1,8 +1,8 @@
 # REST API 
 Для роутинга используется framework GIN, для хранения данных Postgrsql c GORM.
 
-При запуске автоматически создается таблица "account"
-Структура таблицы: Id, Name, Surname, Balance
+При запуске автоматически создается таблица "account". Нужно только указать настройки бд в **config/.env**.
+Структура таблицы: Id, Name, Surname, Balance.
 
 **Все методы описаны с помощью swagger, можно попробовать по ссылке** - http://localhost:8080/docs/index.html
 

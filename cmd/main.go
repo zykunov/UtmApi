@@ -29,7 +29,7 @@ import (
 
 var err error
 
-// Логгер
+// Вспомогательный логгер
 var Logger = log.New(os.Stdout, "[BankAPI] ", 2)
 
 // Подгрузка конфигурации подключения к БД

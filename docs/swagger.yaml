@@ -76,7 +76,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Создание аккаунта.
+      description: Создание аккаунта. Добавил имя и фамилию, чтоб по интереснее было,
+        но это не обязательные параметры.
       parameters:
       - description: account add
         in: body
