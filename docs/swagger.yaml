@@ -1,5 +1,44 @@
 basePath: /
 definitions:
+  helpers.AccountSuccess:
+    properties:
+      balance:
+        default: 500.4
+        type: number
+      id:
+        default: 1
+        type: integer
+      name:
+        default: John
+        type: string
+      surname:
+        default: Doe
+        type: string
+    type: object
+  helpers.BalanceFail:
+    properties:
+      data:
+        default: "0"
+        type: string
+      meta:
+        default: "null"
+        type: string
+      status_code:
+        default: 404
+        type: integer
+    type: object
+  helpers.BalanceSuccess:
+    properties:
+      data:
+        default: "400.54"
+        type: string
+      meta:
+        default: "null"
+        type: string
+      status_code:
+        default: 200
+        type: integer
+    type: object
   helpers.SummAmount:
     properties:
       amount:
@@ -42,7 +81,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Account'
+            $ref: '#/definitions/helpers.AccountSuccess'
         "404":
           description: Not Found
           schema:
@@ -64,14 +103,14 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/helpers.BalanceSuccess'
         "404":
           description: Not Found
           schema:
-            type: string
+            $ref: '#/definitions/helpers.BalanceFail'
       summary: GetBalance
       tags:
       - Account
@@ -81,24 +120,24 @@ paths:
       - application/json
       description: Внесение денег
       parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       - description: deposit
         in: body
         name: input
         required: true
         schema:
           $ref: '#/definitions/helpers.SummAmount'
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
-            $ref: '#/definitions/models.Account'
+            $ref: '#/definitions/helpers.AccountSuccess'
         "404":
           description: Not Found
           schema:
@@ -112,7 +151,12 @@ paths:
       - application/json
       description: Снятие денег
       parameters:
-      - description: account add
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: withdraw
         in: body
         name: input
         required: true
@@ -121,10 +165,10 @@ paths:
       produces:
       - application/json
       responses:
-        "201":
-          description: Created
+        "200":
+          description: OK
           schema:
-            $ref: '#/definitions/models.Account'
+            $ref: '#/definitions/helpers.AccountSuccess'
         "404":
           description: Not Found
           schema:

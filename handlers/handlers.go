@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body models.Account true "account add"
-// @Success 201 {object} models.Account
+// @Success 201 {object} helpers.AccountSuccess
 // @Failure 404 {object} models.Account
 // @Router /accounts [post]
 func AddAccount(c *gin.Context) {
@@ -31,7 +31,7 @@ func AddAccount(c *gin.Context) {
 		helpers.RespondJSON(c, 404, account)
 		return
 	}
-	helpers.RespondJSON(c, 200, account)
+	helpers.RespondJSON(c, 201, account)
 
 	log.Printf("user adding operation, accountId: %d", account.Id)
 }
@@ -43,7 +43,7 @@ func AddAccount(c *gin.Context) {
 // @Produce json
 // @Param id  path int true "User ID"
 // @Param input body  helpers.SummAmount true "deposit"
-// @Success 201 {object} models.Account
+// @Success 200 {object} helpers.AccountSuccess
 // @Failure 404 {object} models.Account
 // @Router /accounts/{id}/deposit [post]
 func Deposit(c *gin.Context) {
@@ -87,7 +87,7 @@ func Deposit(c *gin.Context) {
 // @Produce json
 // @Param id  path int true "User ID"
 // @Param input body helpers.SummAmount true "withdraw"
-// @Success 201 {object} models.Account
+// @Success 200 {object} helpers.AccountSuccess
 // @Failure 404 {object} models.Account
 // @Router /accounts/{id}/withdraw [post]
 func Withdraw(c *gin.Context) {
@@ -138,8 +138,8 @@ func Withdraw(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Param id  path int true "User ID"
-// @Success 201 {string} models.Account
-// @Failure 404 {string} models.Account
+// @Success 200 {object} helpers.BalanceSuccess
+// @Failure 404 {object} helpers.BalanceFail
 // @Router /accounts/{id}/balance [get]
 func GetBalance(c *gin.Context) {
 

@@ -45,7 +45,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/helpers.AccountSuccess"
                         }
                     },
                     "404": {
@@ -80,16 +80,16 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/helpers.BalanceSuccess"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/helpers.BalanceFail"
                         }
                     }
                 }
@@ -110,6 +110,13 @@ const docTemplate = `{
                 "summary": "Deposit",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "deposit",
                         "name": "input",
                         "in": "body",
@@ -117,20 +124,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/helpers.SummAmount"
                         }
-                    },
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/helpers.AccountSuccess"
                         }
                     },
                     "404": {
@@ -157,7 +157,14 @@ const docTemplate = `{
                 "summary": "Withdrow",
                 "parameters": [
                     {
-                        "description": "account add",
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "withdraw",
                         "name": "input",
                         "in": "body",
                         "required": true,
@@ -167,10 +174,10 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created",
+                    "200": {
+                        "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/helpers.AccountSuccess"
                         }
                     },
                     "404": {
@@ -184,6 +191,61 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "helpers.AccountSuccess": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number",
+                    "default": 500.4
+                },
+                "id": {
+                    "type": "integer",
+                    "default": 1
+                },
+                "name": {
+                    "type": "string",
+                    "default": "John"
+                },
+                "surname": {
+                    "type": "string",
+                    "default": "Doe"
+                }
+            }
+        },
+        "helpers.BalanceFail": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "default": "0"
+                },
+                "meta": {
+                    "type": "string",
+                    "default": "null"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "default": 404
+                }
+            }
+        },
+        "helpers.BalanceSuccess": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "default": "400.54"
+                },
+                "meta": {
+                    "type": "string",
+                    "default": "null"
+                },
+                "status_code": {
+                    "type": "integer",
+                    "default": 200
+                }
+            }
+        },
         "helpers.SummAmount": {
             "type": "object",
             "properties": {
