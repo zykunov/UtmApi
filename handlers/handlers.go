@@ -14,7 +14,7 @@ import (
 // @Description Создание аккаунта.
 // @Accept json
 // @Produce json
-// @Param input body models.Account true "account add"
+// @Param input body helpers.AccountAdd true "account add"
 // @Success 201 {object} helpers.AccountSuccess
 // @Failure 404 {object} models.Account
 // @Router /accounts [post]
@@ -70,11 +70,16 @@ func Deposit(c *gin.Context) {
 
 	newBalance := account.Balance + summ.Amount
 
-	err = account.Deposit(newBalance)
-	if err != nil {
-		helpers.RespondJSON(c, 404, account)
-	}
-	helpers.RespondJSON(c, 200, account)
+	// account.Wg.Add(1)
+	go func(c *gin.Context, a models.Account, newBalance float64) {
+		err = account.Deposit(newBalance)
+		if err != nil {
+			helpers.RespondJSON(c, 404, account)
+		}
+		helpers.RespondJSON(c, 200, account)
+	}(c, account, newBalance)
+
+	// account.Wg.Wait()
 
 	log.Printf("Deposit operation, accountId: %d", account.Id)
 
@@ -122,14 +127,15 @@ func Withdraw(c *gin.Context) {
 		return
 	}
 
-	err = account.Withdraw(newBalance)
-	if err != nil {
-		helpers.RespondJSON(c, 404, account)
-	}
-	helpers.RespondJSON(c, 200, account)
+	go func(c *gin.Context, a models.Account, newBalance float64) {
+		err = account.Withdraw(newBalance)
+		if err != nil {
+			helpers.RespondJSON(c, 404, account)
+		}
+		helpers.RespondJSON(c, 200, account)
 
-	log.Printf("Withdraw operation, accountId: %d", account.Id)
-
+		log.Printf("Withdraw operation, accountId: %d", account.Id)
+	}(c, account, newBalance)
 }
 
 // @Summary GetBalance
@@ -154,9 +160,15 @@ func GetBalance(c *gin.Context) {
 	}
 
 	account.Id = uint(id)
-	balance := account.GetBalance()
 
-	helpers.RespondJSON(c, 200, balance)
+	account.Wg.Add(1)
+
+	go func(c *gin.Context, a models.Account) {
+		balance := account.GetBalance()
+		helpers.RespondJSON(c, 200, balance)
+	}(c, account)
+
+	account.Wg.Wait()
 
 	log.Printf("Get balance command, accountId: %d", account.Id)
 

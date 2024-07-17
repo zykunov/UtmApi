@@ -37,7 +37,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Account"
+                            "$ref": "#/definitions/helpers.AccountAdd"
                         }
                     }
                 ],
@@ -191,6 +191,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "helpers.AccountAdd": {
+            "type": "object",
+            "properties": {
+                "balance": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "surname": {
+                    "type": "string"
+                }
+            }
+        },
         "helpers.AccountSuccess": {
             "type": "object",
             "properties": {

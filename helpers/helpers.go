@@ -12,6 +12,11 @@ type Message struct {
 	Data       interface{} `json:"data"`
 }
 
+type AccountAdd struct {
+	Balance float64 `json:"balance"`
+	Surname string  `json:"surname"`
+	Name    string  `json:"name"`
+}
 type AccountSuccess struct {
 	Id      uint    `json:"id" default:"1"`
 	Balance float64 `json:"balance" default:"500.4"`
